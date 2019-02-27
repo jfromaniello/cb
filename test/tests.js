@@ -47,7 +47,7 @@ describe('cb(callback)', function() {
 });
 
 describe('cb(callback).timeout(ms)', function() {
-	
+
 	it('should complete successfully within timeout period', function(done) {
 		invokeAsync(cb(function(err, res) {
 			assert.strictEqual(res, 'foo');
@@ -69,6 +69,17 @@ describe('cb(callback).timeout(ms)', function() {
 		}).timeout(50));
 	});
 
+	it('should show the timeout and real elapsed time', function(done) {
+		invokeAsync(cb(function(err, res) {
+			assert(err.message.match(/Specified timeout of 50ms was reached/));
+			assert(err.message.match(/Real elapsed time 7\dms/));
+			done();
+		}).timeout(50));
+		const start = Date.now();
+		while(true){
+			if (Date.now() - start > 70) { break; }
+		}
+	});
 });
 
 describe('cb(callback).error(errback)', function() {
